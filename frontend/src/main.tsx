@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider.tsx";
+import { SidebarProvider } from "@/components/ui/sidebar.tsx";
 import { Toaster } from "@/components/ui/sonner";
 import { DashboardPage } from "@/dashboard/page.tsx";
 import "@fontsource/lusitana/400.css";
@@ -15,13 +16,15 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster />
+        <SidebarProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
+        </SidebarProvider>
       </QueryClientProvider>
     </ThemeProvider>
   </StrictMode>
