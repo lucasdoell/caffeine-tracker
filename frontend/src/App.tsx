@@ -4,11 +4,9 @@ import { toast } from "sonner";
 
 export default function App() {
   return (
-    <>
-      <div>
-        <ModeToggle />
-        <Button onClick={() => toast("Hello")}>Hello</Button>
-      </div>
-    </>
+    <div>
+      <ModeToggle />
+      <Button onClick={() => toast("Hello")}>Hello</Button>
+    </div>
   );
 }
