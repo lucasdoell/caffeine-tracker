@@ -2,7 +2,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-function App() {
+export default function App() {
   return (
     <>
       <div>
@@ -12,5 +12,3 @@ function App() {
     </>
   );
 }
-
-export default App;
