@@ -1,11 +1,9 @@
 [project]
 name = "backend"
 version = "0.1.0"
+requires-python = ">=3.12"
 dependencies = [
     "django==5.0.2",
     "djangorestframework==3.14.0",
     "django-cors-headers==4.3.1",
 ]
-
-[tool.uv]
-python = "3.12"
