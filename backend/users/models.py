@@ -23,7 +23,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
-    caffeine_sensitivity = models.FloatField(default=5.0)  # Caffeine metabolism rate
+    caffeine_sensitivity = models.FloatField(default=0.5)  # Caffeine metabolism rate
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
