@@ -1,12 +1,11 @@
-import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { LoginForm } from "@/components/login-form";
 
 export default function App() {
   return (
-    <div>
-      <ModeToggle />
-      <Button onClick={() => toast("Hello")}>Hello</Button>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm />
+      </div>
     </div>
   );
 }
