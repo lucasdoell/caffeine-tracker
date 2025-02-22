@@ -25,10 +25,12 @@ import { z } from "zod";
 
 const formSchema = z.object({
   email: z.string().email(),
+  username: z.string().min(2).max(50),
   password: z.string().min(8).max(50),
+  confirmPassword: z.string().min(8).max(50),
 });
 
-export function LoginForm({
+export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -39,33 +41,49 @@ export function LoginForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+      username: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  type LoginResponse = {
+  type SignUpResponse = {
     message: string;
-    user: { id: string; email: string; username: string };
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      first_name: string;
+      last_name: string;
+      caffeine_sensitivity: number;
+    };
     token: string;
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    console.log(values);
+    if (values.password !== values.confirmPassword) {
+      toast.error("Passwords do not match. Please try again.");
+      return;
+    }
 
-    const res = await fetch(`http://localhost:8000/api/users/login/`, {
+    const res = await fetch(`http://localhost:8000/api/users/register/`, {
       method: "POST",
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        email: values.email,
+        username: values.username,
+        password: values.password,
+      }),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const data = (await res.json()) as LoginResponse;
+    const data = (await res.json()) as SignUpResponse;
 
     if (!res.ok) {
-      toast.error("Login failed. Please try again.");
+      toast.error("Sign up failed. Please try again.");
     } else {
       localStorage.setItem("jwt_token", data.token);
       navigate("/dashboard");
@@ -79,10 +97,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardTitle className="text-3xl">Sign Up</CardTitle>
+          <CardDescription>Sign up to your account below</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -114,6 +130,30 @@ export function LoginForm({
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          Username
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            id="username"
+                            placeholder="Username"
+                            autoComplete="username"
+                            required
+                            className="bg-background/98"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
@@ -125,6 +165,31 @@ export function LoginForm({
                             {...field}
                             id="password"
                             type="password"
+                            autoComplete="new-password"
+                            required
+                            className="bg-background/98"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center">
+                          Confirm Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            id="confirmPassword"
+                            type="password"
+                            autoComplete="new-password"
                             required
                             className="bg-background/98"
                           />
@@ -136,14 +201,14 @@ export function LoginForm({
                 </div>
                 <div className="grid gap-4 pt-2">
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Loading..." : "Login"}
+                    {loading ? "Loading..." : "Sign Up"}
                   </Button>
                 </div>
               </div>
               <div className="mt-4 text-center text-md">
-                Don&apos;t have an account?{" "}
+                Already have an account?{" "}
                 <a href="sign-up" className="underline underline-offset-4">
-                  Sign up
+                  Log in
                 </a>
               </div>
             </form>

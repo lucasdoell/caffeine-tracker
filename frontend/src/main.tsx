@@ -1,4 +1,5 @@
 import { LoginPage } from "@/components/login/page.tsx";
+import { SignupPage } from "@/components/signup/page.tsx";
 import { ThemeProvider } from "@/components/theme-provider.tsx";
 import { SidebarProvider } from "@/components/ui/sidebar.tsx";
 import { Toaster } from "@/components/ui/sonner";
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<App />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/sign-up" element={<SignupPage />} />
             </Routes>
           </BrowserRouter>
           <Toaster />
