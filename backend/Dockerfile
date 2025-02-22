@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 # Install dependencies
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev
 
 # Add virtual environment binaries to PATH
 ENV PATH="/app/.venv/bin:$PATH"
