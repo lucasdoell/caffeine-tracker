@@ -33,6 +33,8 @@ DEBUG = env.bool('DEBUG', default=True)
 # ALLOWED_HOSTS=localhost,127.0.0.1,127.0.0.1:8000,shuttle.proxy.rlwy.net
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='your_default_gemini_api_key_here')
+
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',

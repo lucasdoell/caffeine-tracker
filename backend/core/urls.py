@@ -5,5 +5,5 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),  # Auth API
     path('api/caffeine/', include('caffeine.urls')), # Final caffeine log submission endpoint
-    #path('api/ai/', include('ai.urls')),   
+    path('api/ai/', include('ai.urls')),   
 ]
