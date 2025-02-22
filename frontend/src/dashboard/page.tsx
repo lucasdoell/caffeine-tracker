@@ -3,6 +3,7 @@ import { CaffeineChart } from "@/components/charts/caffeine-chart";
 import { CaffeineOverTimeChart } from "@/components/charts/caffeine-over-time";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QuickSelectorCard } from "@/dashboard/quick-selector-card";
+import { User } from "@/types/auth";
 import { useQuery } from "@tanstack/react-query";
 
 function DashboardLayout({ children }: React.PropsWithChildren) {
@@ -16,7 +17,7 @@ function DashboardLayout({ children }: React.PropsWithChildren) {
 
 async function getUser(token: string | null) {
   if (!token) return null;
-  const res = await fetch("/api/users/profile", {
+  const res = await fetch("http://localhost:8000/api/users/profile/", {
     headers: {
       Authorization: `Token ${token}`,
     },
@@ -26,13 +27,17 @@ async function getUser(token: string | null) {
 }
 
 export function DashboardPage() {
-  const { data: user, isLoading: userLoading } = useQuery<string | null>({
+  const { data: user, isLoading: userLoading } = useQuery<User | null>({
     queryKey: ["user"],
-    queryFn: () => getUser(localStorage.getItem("jwt_token") ?? null),
+    queryFn: async () => getUser(localStorage.getItem("jwt_token") ?? null),
     staleTime: Infinity,
   });
 
-  const username = userLoading ? "Loading..." : user ? user : "unknown user";
+  const username = userLoading
+    ? "Loading..."
+    : user
+    ? user.username
+    : "unknown user";
 
   return (
     <DashboardLayout>
