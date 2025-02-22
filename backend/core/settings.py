@@ -24,7 +24,7 @@ environ.Env.read_env(os.path.join(Path(__file__).resolve().parent.parent.parent,
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-5lzpi34d7muq%!#(zq!ri%k5n*-&@5bk2&j=t=1*my=+5)=a0d')
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
@@ -33,7 +33,7 @@ DEBUG = env.bool('DEBUG', default=True)
 # ALLOWED_HOSTS=localhost,127.0.0.1,127.0.0.1:8000,shuttle.proxy.rlwy.net
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
-GEMINI_API_KEY = env('GEMINI_API_KEY', default='your_default_gemini_api_key_here')
+GEMINI_API_KEY = env('GEMINI_API_KEY')
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=env('DATABASE_URL', default="postgresql://postgres:aWKxnTWPhDlEPVaobMelqQMrMqjoxLBR@shuttle.proxy.rlwy.net:24601/railway"),
+        default=env('DATABASE_URL'),
         conn_max_age=600
     )
 }
@@ -133,5 +133,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Cloudflare R2 storage configuration using django-storages with boto3.
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='cornell-makeathon')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='auto')
+AWS_DEFAULT_ACL = None  # Disable default ACL if you want to manage access via bucket policies
+
+# Files will now be uploaded to Cloudflare R2; MEDIA_URL is set accordingly:
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
