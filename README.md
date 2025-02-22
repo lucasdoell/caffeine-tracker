@@ -18,7 +18,7 @@ npm run dev
 cd backend
 uv venv
 source .venv/bin/activate  # On Windows: .\venv\Scripts\activate
-uv pip install django djangorestframework django-cors-headers
+uv pip install -r pyproject.toml
 python manage.py migrate
 python manage.py runserver
 ```
