@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { SignUpResponse } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -46,19 +47,6 @@ export function SignupForm({
       confirmPassword: "",
     },
   });
-
-  type SignUpResponse = {
-    message: string;
-    user: {
-      id: string;
-      email: string;
-      username: string;
-      first_name: string;
-      last_name: string;
-      caffeine_sensitivity: number;
-    };
-    token: string;
-  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
