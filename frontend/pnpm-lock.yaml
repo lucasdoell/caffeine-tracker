@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/lusitana':
+        specifier: ^5.1.1
+        version: 5.1.1
       '@hookform/resolvers':
         specifier: ^4.1.1
         version: 4.1.1(react-hook-form@7.54.2(react@19.0.0))
@@ -486,6 +489,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource/lusitana@5.1.1':
+    resolution: {integrity: sha512-G9aETtxW44MY1eZJWzyygdUeQihv4bb/bItKton1EibPJhGg1tRz2cF49SFOWlrhXxu+tT8LU3oKOBsEYRb+lw==}
 
   '@hookform/resolvers@4.1.1':
     resolution: {integrity: sha512-S9YN1RgNWG+klUz5uQaV6rjE4pr6Py2tamj7ekshzLcMyg+/Pal1KZAYgGszV0+doiy41dUiQgXL3uRS9stndQ==}
@@ -2751,6 +2757,8 @@ snapshots:
       react-dom: 19.0.0(react@19.0.0)
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource/lusitana@5.1.1': {}
 
   '@hookform/resolvers@4.1.1(react-hook-form@7.54.2(react@19.0.0))':
     dependencies:
