@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { CaffeineChart } from "@/components/charts/caffeine-chart";
 import { CaffeineOverTimeChart } from "@/components/charts/caffeine-over-time";
+import { CaffeineLog } from "@/components/log/caffeine-log";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QuickSelectorCard } from "@/dashboard/quick-selector-card";
 import { User } from "@/types/auth";
@@ -66,7 +67,10 @@ export function DashboardPage() {
             <div className="gap-6">
               <CaffeineChart />
             </div>
-            <div className="gap-6 col-span-full xl:col-span-3">
+            <div className="gap-6">
+              <CaffeineLog />
+            </div>
+            <div className="gap-6 col-span-3">
               <CaffeineOverTimeChart />
             </div>
             <div className="gap-6 col-span-2">
