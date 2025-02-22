@@ -16,9 +16,9 @@ npm run dev
 
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-pip install -r requirements.txt
+uv venv
+source .venv/bin/activate  # On Windows: .\venv\Scripts\activate
+uv pip install django djangorestframework django-cors-headers
 python manage.py migrate
 python manage.py runserver
 ```
