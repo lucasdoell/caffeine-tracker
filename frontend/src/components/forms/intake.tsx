@@ -132,6 +132,13 @@ export function CaffeineLogDialog() {
 
       toast.success("Successfully submitted caffeine intake");
 
+      queryClient.invalidateQueries({
+        queryKey: ["caffeineLogs"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["caffeineOverTime"],
+      });
+
       // Reset form and close dialog
       setStep(4);
     } catch (error) {
@@ -197,16 +204,10 @@ export function CaffeineLogDialog() {
 
   function handleAddAnother() {
     resetForm();
-    queryClient.invalidateQueries({
-      queryKey: ["caffeineLogs"],
-    });
   }
 
   function handleClose() {
     resetForm();
-    queryClient.invalidateQueries({
-      queryKey: ["caffeineLogs"],
-    });
     setIsDialogOpen(false);
   }
 
