@@ -257,11 +257,14 @@ Authorization: Token **your_auth_token_here**
 **Request:**  
 ```json  
 {
-  "drink_name": "Latte",
-  "caffeine_content_mg": 120,
-  "sugar_content_g": 12,
-  "calories_kcal": 180,
-  "consumed_at": "2025-02-23T08:30:00Z"
+  "beverage_name": "Espresso",
+  "caffeine_amount_mg": 80.0,
+  "beverage_size_ml": 30,
+  "sugar_content_g": 0,
+  "calories_kcal": 5,
+  "image_url": "https://blogstudio.s3.theshoppad.net/coffeeheroau/ec178d83e5f597b162cda1e60cb64194.jpg",
+  "additional_notes": "This is my morning coffee.",
+  "confirmed": true
 }
 ```
 
@@ -352,5 +355,4 @@ GET `/api/caffeine/logs/42/`
 
 ---
 
----
 
