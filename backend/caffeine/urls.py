@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import CaffeineLogCreateAPIView
+from .views import CaffeineLogCreateAPIView, CaffeineLogListAPIView, CaffeineLogDetailAPIView
 
 urlpatterns = [
-    path('logs/', CaffeineLogCreateAPIView.as_view(), name='caffeine-log-create'),
+    path('logs/', CaffeineLogListAPIView.as_view(), name='caffeine-log-list'),  # List all logs
+    path('logs/create/', CaffeineLogCreateAPIView.as_view(), name='caffeine-log-create'),  # Create log
+    path('logs/<int:pk>/', CaffeineLogDetailAPIView.as_view(), name='caffeine-log-detail'),  # Retrieve single log
 ]
+
