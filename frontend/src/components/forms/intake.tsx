@@ -117,7 +117,7 @@ export function CaffeineLogDialog() {
 
   async function handleConfirmation() {
     try {
-      const response = await fetch("/api/caffeine/logs/create/", {
+      const response = await fetch("/api/caffeine/logs/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

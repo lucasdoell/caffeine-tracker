@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Coffee } from "lucide-react";
 
 async function getCaffeineLogs() {
-  const response = await fetch("/api/caffeine/logs/", {
+  const response = await fetch("/api/caffeine/logs", {
     method: "GET",
     headers: {
       Authorization: `Token ${localStorage.getItem("jwt_token")}`,
