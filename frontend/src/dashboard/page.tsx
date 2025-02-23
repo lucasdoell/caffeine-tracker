@@ -18,7 +18,7 @@ function DashboardLayout({ children }: React.PropsWithChildren) {
 
 async function getUser(token: string | null) {
   if (!token) return null;
-  const res = await fetch("/api/users/profile", {
+  const res = await fetch("/api/users/profile/", {
     headers: {
       Authorization: `Token ${token}`,
     },

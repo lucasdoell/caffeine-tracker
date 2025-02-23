@@ -54,7 +54,7 @@ function formatDate(date: string): string {
 }
 
 async function getCaffeineOverTime(): Promise<CaffeineDataPoint[]> {
-  const response = await fetch("/api/caffeine/caffeine-over-time", {
+  const response = await fetch("/api/caffeine/caffeine-over-time/", {
     method: "GET",
     headers: {
       Authorization: `Token ${localStorage.getItem("jwt_token")}`,

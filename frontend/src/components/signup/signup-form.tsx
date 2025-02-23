@@ -57,7 +57,7 @@ export function SignupForm({
       return;
     }
 
-    const res = await fetch("/api/users/register", {
+    const res = await fetch("/api/users/register/", {
       method: "POST",
       body: JSON.stringify({
         email: values.email,
