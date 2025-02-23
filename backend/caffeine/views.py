@@ -1,8 +1,11 @@
 from rest_framework import generics, permissions
+from rest_framework.views import APIView
 from .models import CaffeineLog
 from .serializers import CaffeineLogSerializer, CaffeineOverTimeSerializer
 from datetime import datetime, timedelta
 from rest_framework.response import Response
+from django.utils.timezone import now
+import math
 
 # Create Caffeine Log
 class CaffeineLogCreateAPIView(generics.CreateAPIView):
@@ -31,38 +34,40 @@ class CaffeineLogDetailAPIView(generics.RetrieveAPIView):
     def get_queryset(self):
         return CaffeineLog.objects.filter(user=self.request.user)
     
-class CaffeineOverTimeAPIView(generics.ListAPIView):
-    """
-    Returns caffeine remaining over time for a user.
-    """
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = CaffeineOverTimeSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        logs = CaffeineLog.objects.filter(user=user).order_by("created_at")
-        return logs
-
-    def list(self, request, *args, **kwargs):
-        user = request.user
+class CaffeineOverTimeAPIView(APIView):
+    def get(self, request):
+        user = request.user  # Get the authenticated user
         caffeine_logs = CaffeineLog.objects.filter(user=user).order_by("created_at")
 
-        half_life_hours = 5  # Average caffeine half-life
-        caffeine_decay = []
+        if not caffeine_logs.exists():
+            return Response({"message": "No caffeine logs found."}, status=200)
 
-        # Process each caffeine log to compute decay over time
+        half_life_hours = 5  # Caffeine half-life in hours
+        all_decay_points = {}
+
         for log in caffeine_logs:
-            initial_caffeine = log.caffeine_mg
-            timestamp = log.created_at
+            caffeine_amount = log.caffeine_mg
+            start_time = log.created_at
 
-            # Generate decay data points for 24 hours (every 1 hour)
-            for hour in range(0, 24 + 1):  
-                decay_time = timestamp + timedelta(hours=hour)
-                caffeine_remaining = initial_caffeine * (0.5 ** (hour / half_life_hours))
+            # Generate caffeine decay points
+            for hour in range(0, 24 * 2, 1):  # Track for 48 hours
+                timestamp = start_time + timedelta(hours=hour)  # ✅ Fix: Use timedelta directly
+                time_diff = (timestamp - start_time).total_seconds() / 3600  # Convert to hours
+                
+                # Calculate caffeine remaining
+                remaining_caffeine = caffeine_amount * (0.5 ** (time_diff / half_life_hours))
 
-                caffeine_decay.append({
-                    "date": decay_time.isoformat(),
-                    "caffeine_remaining_mg": round(caffeine_remaining, 2)
-                })
+                # Sum caffeine at overlapping times
+                timestamp_str = timestamp.isoformat()
+                if timestamp_str in all_decay_points:
+                    all_decay_points[timestamp_str] += remaining_caffeine
+                else:
+                    all_decay_points[timestamp_str] = remaining_caffeine
 
-        return Response(caffeine_decay, status=200)
+        # Convert to sorted list of {date, caffeine_remaining_mg}
+        decay_data = [
+            {"date": ts, "caffeine_remaining_mg": round(caffeine, 2)}
+            for ts, caffeine in sorted(all_decay_points.items())
+        ]
+
+        return Response(decay_data, status=200)
