@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera, Loader2, PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -43,10 +45,35 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+function parseAIResponse(response: string): DrinkData | null {
+  try {
+    // Remove markdown code block syntax and parse JSON
+    const jsonStr = response.replace(/```json\n|\n```/g, "");
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error("Failed to parse AI response:", error);
+    return null;
+  }
+}
+
+interface DrinkData {
+  drink_name: string;
+  calories: string;
+  total_fat: string;
+  sodium: string;
+  total_carbohydrate: string;
+  sugar: string;
+  added_sugar: string;
+  protein: string;
+  caffeine: string;
+  serving_size: string;
+}
+
 export function CaffeineLogDialog() {
   const [step, setStep] = useState(1);
   const [isUploading, setIsUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [drinkData, setDrinkData] = useState<DrinkData | null>(null);
   const [loading, setLoading] = useState(false);
 
   const form = useForm<FormValues>({
@@ -65,6 +92,30 @@ export function CaffeineLogDialog() {
       // Set the actual file in the form
       form.setValue("image", file);
       setIsUploading(false);
+    }
+  }
+
+  async function handleConfirmation() {
+    try {
+      const response = await fetch("/api/confirm-caffeine-log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...form.getValues(), ...drinkData }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to confirm submission");
+      }
+
+      // Reset form and close dialog
+      form.reset();
+      setImagePreview(null);
+      setStep(1);
+      setDrinkData(null);
+    } catch (error) {
+      console.error("Error confirming submission:", error);
     }
   }
 
@@ -106,9 +157,11 @@ export function CaffeineLogDialog() {
       toast.success("Successfully submitted caffeine intake");
 
       // Reset form and close dialog
-      form.reset();
-      setImagePreview(null);
-      setStep(1);
+      const data = (await response.json()) as {
+        analysis: { raw_response: string };
+      };
+      setDrinkData(parseAIResponse(data.analysis.raw_response));
+      setStep(3);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to submit");
@@ -134,7 +187,7 @@ export function CaffeineLogDialog() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {step === 1 ? (
+            {step === 1 && (
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <FormLabel htmlFor="image">Upload Image</FormLabel>
@@ -179,7 +232,9 @@ export function CaffeineLogDialog() {
                   </Button>
                 </div>
               </div>
-            ) : (
+            )}
+
+            {step === 2 && (
               <div className="grid gap-4 py-4">
                 <FormField
                   control={form.control}
@@ -269,6 +324,57 @@ export function CaffeineLogDialog() {
                   </Button>
                   <Button type="submit" disabled={loading}>
                     {loading ? "Loading..." : "Submit"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && drinkData && (
+              <div className="grid gap-4 py-4">
+                <h3 className="text-lg font-semibold">Confirm Drink Details</h3>
+                <div className="grid gap-2">
+                  <p>
+                    <strong>Drink Name:</strong> {drinkData.drink_name}
+                  </p>
+                  <p>
+                    <strong>Calories:</strong> {drinkData.calories}
+                  </p>
+                  <p>
+                    <strong>Total Fat:</strong> {drinkData.total_fat}
+                  </p>
+                  <p>
+                    <strong>Sodium:</strong> {drinkData.sodium}
+                  </p>
+                  <p>
+                    <strong>Total Carbohydrate:</strong>{" "}
+                    {drinkData.total_carbohydrate}
+                  </p>
+                  <p>
+                    <strong>Sugar:</strong> {drinkData.sugar}
+                  </p>
+                  <p>
+                    <strong>Added Sugar:</strong> {drinkData.added_sugar}
+                  </p>
+                  <p>
+                    <strong>Protein:</strong> {drinkData.protein}
+                  </p>
+                  <p>
+                    <strong>Caffeine:</strong> {drinkData.caffeine}
+                  </p>
+                  <p>
+                    <strong>Serving Size:</strong> {drinkData.serving_size}
+                  </p>
+                </div>
+                <div className="flex justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setStep(2)}
+                  >
+                    Back
+                  </Button>
+                  <Button type="button" onClick={handleConfirmation}>
+                    Confirm
                   </Button>
                 </div>
               </div>
