@@ -32,7 +32,7 @@ export function AppSidebar() {
               <SidebarMenuItem key={item.label}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton asChild className="h-12 w-12 p-0">
+                    <SidebarMenuButton asChild className="h-11 w-11 p-0">
                       <a
                         href={item.href}
                         className="flex items-center justify-center"
