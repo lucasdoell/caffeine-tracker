@@ -7,6 +7,8 @@ CaffTrack is a web-based application designed to help users track their caffeine
 
 The application integrates **AI-driven analysis**, **real-time caffeine tracking**, and **cloud-based storage** to provide a seamless and insightful user experience.
 
+Publicly Available at https://caffeine.lucasdoell.dev/
+
 ---
 
 ## **Tech Stack**
