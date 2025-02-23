@@ -25,334 +25,307 @@ python manage.py runserver
 
 # **API Specification**
 
-## **User Endpoints**
+---
 
-### **POST** /api/users/register/  
-Register a new user.  
+## **User Authentication & Management**
 
-**Request:**  
+### **1. Register User**
+**POST /api/users/register/**  
+Registers a new user.
+
+#### **Authentication:** Not required  
+#### **Request Body (JSON)**
 ```json
 {
-  "email": "user@example.com",
-  "username": "testuser",
-  "password": "securepassword"
+  "username": "newuser",
+  "email": "newuser@example.com",
+  "password": "SecurePassword123"
 }
 ```
-
-**Response:** 
+#### **Response (201 Created)**
 ```json
 {
   "message": "User registered successfully.",
   "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "username": "testuser",
-    "first_name": "",
-    "last_name": "",
-    "caffeine_sensitivity": 5.0
+    "id": 1,
+    "username": "newuser",
+    "email": "newuser@example.com"
   },
-  "token": "generated_token_here"
+  "token": "abc123token"
 }
 ```
+#### **Possible Errors**
+- **400 Bad Request**: Invalid data format or missing fields.
+- **409 Conflict**: Email or username already exists.
 
 ---
 
-### **POST** /api/users/login/  
-Authenticate a user and return a token.  
+### **2. Login User**
+**POST /api/users/login/**  
+Logs in an existing user.
 
-**Request:** 
+#### **Authentication:** Not required  
+#### **Request Body (JSON)**
 ```json
 {
-  "email": "user@example.com",
-  "password": "securepassword"
+  "email": "newuser@example.com",
+  "password": "SecurePassword123"
 }
 ```
-
-**Response:**  
+#### **Response (200 OK)**
 ```json
 {
   "message": "Login successful.",
   "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "username": "testuser"
+    "id": 1,
+    "username": "newuser",
+    "email": "newuser@example.com"
   },
-  "token": "generated_token_here"
+  "token": "abc123token"
 }
 ```
+#### **Possible Errors**
+- **400 Bad Request**: Invalid email or password.
 
 ---
 
-### **POST** /api/users/logout/  
-Log out a user.  
+### **3. Logout User**
+**POST /api/users/logout/**  
+Logs out the authenticated user.
 
-**Headers:**  
-Authorization: Token generated_token_here  
-
-**Response:**  
+#### **Authentication:** Required (Token)
+#### **Response (200 OK)**
 ```json
 {
   "message": "Logout successful."
 }
 ```
+#### **Possible Errors**
+- **401 Unauthorized**: User not authenticated.
 
 ---
 
-### **GET** /api/users/profile/  
-Retrieve the authenticated user's profile.  
+### **4. Get User Profile**
+**GET /api/users/profile/**  
+Retrieves the authenticated user's profile.
 
-**Headers:**  
-Authorization: Token generated_token_here  
-
-**Response:**  
+#### **Authentication:** Required (Token)
+#### **Response (200 OK)**
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "username": "testuser",
-  "first_name": "",
-  "last_name": "",
-  "caffeine_sensitivity": 5.0
+  "id": 1,
+  "username": "newuser",
+  "email": "newuser@example.com"
 }
 ```
+#### **Possible Errors**
+- **401 Unauthorized**: User not authenticated.
 
 ---
 
-### **PATCH** /api/users/profile/  
-Update user profile details.  
+### **5. Update User Profile**
+**PATCH /api/users/profile/**  
+Updates the authenticated user's profile.
 
-**Headers:**  
-Authorization: Token generated_token_here  
-
-**Request:**  
+#### **Authentication:** Required (Token)
+#### **Request Body (JSON)**
 ```json
 {
-  "first_name": "John",
-  "last_name": "Doe"
+  "username": "updatedUser"
 }
 ```
-
-**Response:**  
+#### **Response (200 OK)**
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "username": "testuser",
-  "first_name": "John",
-  "last_name": "Doe",
-  "caffeine_sensitivity": 5.0
+  "id": 1,
+  "username": "updatedUser",
+  "email": "newuser@example.com"
 }
 ```
+#### **Possible Errors**
+- **400 Bad Request**: Invalid fields.
+- **401 Unauthorized**: User not authenticated.
 
 ---
 
-### **POST** /api/users/change-password/  
-Change the user's password.  
+### **6. Change Password**
+**POST /api/users/change-password/**  
+Allows an authenticated user to change their password.
 
-**Headers:**  
-Authorization: Token generated_token_here  
-
-**Request:**  
+#### **Authentication:** Required (Token)
+#### **Request Body (JSON)**
 ```json
 {
-  "old_password": "securepassword",
-  "new_password": "newsecurepassword"
+  "old_password": "SecurePassword123",
+  "new_password": "NewSecurePassword456"
 }
 ```
-
-**Response:**  
+#### **Response (200 OK)**
 ```json
 {
   "message": "Password updated successfully."
 }
 ```
+#### **Possible Errors**
+- **400 Bad Request**: Old password is incorrect.
+- **401 Unauthorized**: User not authenticated.
 
 ---
 
-## **Authentication Notes**
-- Use the **`Authorization: Token <your_token>`** header for endpoints that require authentication.
-- Tokens are **returned during login and registration** and must be stored securely.
-- Logout will **invalidate the token**. The user will need to re-login to get a new one.
+## **AI Chat & Drink Submission**
 
----
+### **7. Submit Drink for AI Analysis**
+**POST /api/ai/submit-drink/**  
+Submits an image of a drink for analysis.
 
-## AI Endpoints
+#### **Authentication:** Required (Token)
+#### **Request Body (multipart/form-data)**
+- `image` (file, required): The drink image.
+- `beverage_size_ml` (integer, optional): Size in milliliters.
+- `sugar_content_g` (integer, optional): Sugar content in grams.
+- `calories_kcal` (integer, optional): Calories.
+- `additional_notes` (string, optional): Additional user notes.
 
-### POST /api/ai/submit-drink/  
-Uploads an image of a drink to Cloudflare R2, analyzes it using Gemini AI, and returns estimated nutritional details.
-
-**Headers:**  
-Authorization: Token **your_auth_token_here**
-
-**Request:**  
-FormData:
-- **image** (file) - The drink image (JPEG, PNG, etc.).
-- **beverage_size_ml** (optional, integer) - The drink size in milliliters.
-- **sugar_content_g** (optional, float) - The estimated sugar content.
-- **calories_kcal** (optional, float) - The estimated calories.
-- **additional_notes** (optional, string) - Any additional user input.
-
-**Example Request:**  
-FormData:
-- image: **monster_drink.jpg**
-- beverage_size_ml: **500**
-- sugar_content_g: **54**
-- calories_kcal: **230**
-- additional_notes: **Monster Energy Drink - Green Can**
-
-**Response:**  
-```json  
+#### **Response (200 OK)**
+```json
 {
-  "image_url": "https://r2.lucasdoell.dev/uploads/caffeine_drinks/monster_drink.jpg",
+  "image_url": "https://cdn.example.com/uploads/drink.jpg",
   "analysis": {
-    "drink_name": "Monster Energy",
-    "caffeine_mg": 160,
-    "sugar_content_g": 54,
-    "calories_kcal": 230,
-    "confidence_score": 0.92
+    "beverage_name": "Monster Energy Zero Ultra",
+    "caffeine_mg": 140,
+    "sugars_g": 0,
+    "calories": 10
   }
 }
 ```
-
-**Possible Errors:**  
-- **400 Bad Request** - Missing required parameters (e.g., no image provided).  
-- **500 Internal Server Error** - Issue processing the image or communicating with Gemini AI.  
-
----
-
-### POST /api/ai/chat/  
-A chatbot for answering caffeine-related questions using Gemini AI.
-
-**Headers:**  
-Authorization: Token **your_auth_token_here**
-
-**Request:**  
-```json  
-{
-  "message": "How much caffeine is in a Red Bull?"
-}
-```
-
-**Response:**  
-```json  
-{
-  "response": "A standard 8.4 oz (250ml) can of Red Bull contains approximately 80 mg of caffeine."
-}
-```
-
-**Possible Errors:**  
-- **400 Bad Request** - Missing `message` parameter.  
-- **500 Internal Server Error** - AI service is unavailable or encounters an issue.  
+#### **Possible Errors**
+- **400 Bad Request**: Image missing or invalid.
+- **500 Internal Server Error**: AI processing failure.
 
 ---
 
-## Caffeine Tracking Endpoints
+### **8. AI Chat**
+**POST /api/ai/chat/**  
+Provides AI-generated responses based on user input and caffeine logs.
 
-### POST /api/caffeine/logs/create/  
-Logs a caffeine entry into the user's tracking history.
+#### **Authentication:** Required (Token)
+#### **Request Body (JSON)**
+```json
+{
+  "message": "How much caffeine have I consumed today?"
+}
+```
+#### **Response (200 OK)**
+```json
+{
+  "response": "Based on your logs, you have consumed 500mg of caffeine today."
+}
+```
+#### **Possible Errors**
+- **400 Bad Request**: Message field missing.
+- **500 Internal Server Error**: AI processing failure.
 
-**Headers:**  
-Authorization: Token **your_auth_token_here**
+---
 
-**Request:**  
-```json  
+## **Caffeine Log Management**
+
+### **9. Create Caffeine Log**
+**POST /api/caffeine/logs/**  
+Creates a new caffeine log entry.
+
+#### **Authentication:** Required (Token)
+#### **Request Body (JSON)**
+```json
 {
   "beverage_name": "Espresso",
-  "caffeine_mg": 80.0,
-  "beverage_size_ml": 30,
-  "sugar_content_g": 0,
-  "calories_kcal": 5,
-  "image_url": "https://blogstudio.s3.theshoppad.net/coffeeheroau/ec178d83e5f597b162cda1e60cb64194.jpg",
-  "additional_notes": "This is my morning coffee.",
-  "confirmed": true
+  "caffeine_mg": 75,
+  "sugars_g": 0
 }
 ```
-
-**Response:**  
-```json  
+#### **Response (201 Created)**
+```json
 {
-  "message": "Caffeine log saved successfully.",
-  "log": {
-    "id": 42,
-    "user": "your_user_id",
-    "drink_name": "Latte",
-    "caffeine_mg": 120,
-    "sugar_content_g": 12,
-    "calories_kcal": 180,
-    "consumed_at": "2025-02-23T08:30:00Z"
-  }
+  "id": 10,
+  "beverage_name": "Espresso",
+  "caffeine_mg": 75,
+  "sugars_g": 0,
+  "created_at": "2025-02-23T12:00:00Z"
 }
 ```
-
-**Possible Errors:**  
-- **400 Bad Request** - Missing required fields (e.g., no drink name).  
-- **500 Internal Server Error** - Database error while saving the log.  
+#### **Possible Errors**
+- **400 Bad Request**: Missing or invalid fields.
 
 ---
 
-### GET /api/caffeine/logs/  
+### **10. Get All Caffeine Logs**
+**GET /api/caffeine/logs/**  
 Retrieves all caffeine logs for the authenticated user.
 
-**Headers:**  
-Authorization: Token **your_auth_token_here**
-
-**Response:**  
-```json  
+#### **Authentication:** Required (Token)
+#### **Response (200 OK)**
+```json
 [
   {
-    "id": 42,
-    "user": "your_user_id",
-    "drink_name": "Latte",
-    "caffeine_content_mg": 120,
-    "sugar_content_g": 12,
-    "calories_kcal": 180,
-    "consumed_at": "2025-02-23T08:30:00Z"
+    "id": 5,
+    "beverage_name": "Cappuccino",
+    "caffeine_mg": 80,
+    "sugars_g": 2,
+    "created_at": "2025-02-21T09:30:00Z"
   },
   {
-    "id": 43,
-    "user": "your_user_id",
-    "drink_name": "Espresso",
-    "caffeine_mg": 80,
-    "sugar_content_g": 0,
-    "calories_kcal": 5,
-    "consumed_at": "2025-02-23T10:00:00Z"
+    "id": 6,
+    "beverage_name": "Black Coffee",
+    "caffeine_mg": 95,
+    "sugars_g": 0,
+    "created_at": "2025-02-22T07:45:00Z"
   }
 ]
 ```
-
-**Possible Errors:**  
-- **401 Unauthorized** - User must be logged in.  
-- **500 Internal Server Error** - Issue retrieving data from the database.  
+#### **Possible Errors**
+- **401 Unauthorized**: User not authenticated.
 
 ---
 
-### GET /api/caffeine/logs/{id}/  
-Retrieve details for a single caffeine log by ID.
+### **11. Get Caffeine Log by ID**
+**GET /api/caffeine/logs/{log_id}/**  
+Retrieves a single caffeine log entry.
 
-**Headers:**  
-Authorization: Token **your_auth_token_here**
-
-**Example Request:**  
-GET `/api/caffeine/logs/42/`
-
-**Response:**  
-```json  
+#### **Authentication:** Required (Token)
+#### **Response (200 OK)**
+```json
 {
-  "id": 42,
-  "user": "your_user_id",
-  "drink_name": "Latte",
-  "caffeine_mg": 120,
-  "sugar_content_g": 12,
-  "calories_kcal": 180,
-  "consumed_at": "2025-02-23T08:30:00Z"
+  "id": 5,
+  "beverage_name": "Cappuccino",
+  "caffeine_mg": 80,
+  "sugars_g": 2,
+  "created_at": "2025-02-21T09:30:00Z"
 }
 ```
-
-**Possible Errors:**  
-- **401 Unauthorized** - User must be logged in.  
-- **404 Not Found** - Caffeine log does not exist for the given ID.  
-- **500 Internal Server Error** - Issue retrieving data from the database.  
+#### **Possible Errors**
+- **404 Not Found**: Log entry not found.
 
 ---
 
+### **12. Get Caffeine Over Time**
+**GET /api/caffeine/over-time/**  
+Retrieves caffeine levels over time.
 
+#### **Authentication:** Required (Token)
+#### **Response (200 OK)**
+```json
+[
+  {
+    "date": "2025-02-21T09:30:00Z",
+    "caffeine_remaining_mg": 40
+  },
+  {
+    "date": "2025-02-22T07:45:00Z",
+    "caffeine_remaining_mg": 20
+  }
+]
+```
+#### **Possible Errors**
+- **401 Unauthorized**: User not authenticated.
+- **200 OK (Empty List)**: No caffeine logs found.
+
+---
