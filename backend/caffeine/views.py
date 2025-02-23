@@ -7,5 +7,4 @@ class CaffeineLogCreateAPIView(generics.CreateAPIView):
     serializer_class = CaffeineLogSerializer
 
     def perform_create(self, serializer):
-        # Mark the entry as confirmed (user has accepted the AI's analysis)
         serializer.save(user=self.request.user, confirmed=True)
