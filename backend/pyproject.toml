@@ -35,7 +35,6 @@ dependencies = [
     "numpy==2.2.3",
     "pandas==2.2.3",
     "pillow==11.1.0",
-    "pip==24.0",
     "proto-plus==1.26.0",
     "protobuf==5.29.3",
     "psycopg2-binary==2.9.10",
@@ -57,5 +56,12 @@ dependencies = [
     "tzdata==2025.1",
     "uritemplate==4.1.1",
     "urllib3==2.2.3",
-    "websockets==14.2"
+    "websockets==14.2",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["ai", "api", "core", "users", "energy", "uploads", "caffeine"]
