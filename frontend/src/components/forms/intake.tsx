@@ -97,12 +97,16 @@ export function CaffeineLogDialog() {
 
   async function handleConfirmation() {
     try {
-      const response = await fetch("/api/confirm-caffeine-log", {
+      const response = await fetch("/api/caffeine/logs/create/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("jwt_token")}`,
         },
-        body: JSON.stringify({ ...form.getValues(), ...drinkData }),
+        body: JSON.stringify({
+          ...drinkData,
+          caffeine: drinkData?.caffeine.replace("mg", ""),
+        }),
       });
 
       if (!response.ok) {
