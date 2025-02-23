@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 COPY . .
 
 # Install using uv pip
-RUN uv pip install --system dj-database-url==2.3.0 django-environ==0.12.0 psycopg2-binary==2.9.10 django==5.1.6 djangorestframework==3.15.2 django-cors-headers==4.6.0 google-generativeai==0.8.4 pillow==11.1.0 requests==2.32.3
+RUN uv pip install --system -e .
 
 ENTRYPOINT []
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
