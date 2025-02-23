@@ -287,3 +287,70 @@ Authorization: Token **your_auth_token_here**
 
 ---
 
+### GET /api/caffeine/logs/  
+Retrieves all caffeine logs for the authenticated user.
+
+**Headers:**  
+Authorization: Token **your_auth_token_here**
+
+**Response:**  
+```json  
+[
+  {
+    "id": 42,
+    "user": "your_user_id",
+    "drink_name": "Latte",
+    "caffeine_content_mg": 120,
+    "sugar_content_g": 12,
+    "calories_kcal": 180,
+    "consumed_at": "2025-02-23T08:30:00Z"
+  },
+  {
+    "id": 43,
+    "user": "your_user_id",
+    "drink_name": "Espresso",
+    "caffeine_content_mg": 80,
+    "sugar_content_g": 0,
+    "calories_kcal": 5,
+    "consumed_at": "2025-02-23T10:00:00Z"
+  }
+]
+```
+
+**Possible Errors:**  
+- **401 Unauthorized** - User must be logged in.  
+- **500 Internal Server Error** - Issue retrieving data from the database.  
+
+---
+
+### GET /api/caffeine/logs/{id}/  
+Retrieve details for a single caffeine log by ID.
+
+**Headers:**  
+Authorization: Token **your_auth_token_here**
+
+**Example Request:**  
+GET `/api/caffeine/logs/42/`
+
+**Response:**  
+```json  
+{
+  "id": 42,
+  "user": "your_user_id",
+  "drink_name": "Latte",
+  "caffeine_content_mg": 120,
+  "sugar_content_g": 12,
+  "calories_kcal": 180,
+  "consumed_at": "2025-02-23T08:30:00Z"
+}
+```
+
+**Possible Errors:**  
+- **401 Unauthorized** - User must be logged in.  
+- **404 Not Found** - Caffeine log does not exist for the given ID.  
+- **500 Internal Server Error** - Issue retrieving data from the database.  
+
+---
+
+---
+
