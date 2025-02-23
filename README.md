@@ -206,7 +206,7 @@ FormData:
   "image_url": "https://r2.lucasdoell.dev/uploads/caffeine_drinks/monster_drink.jpg",
   "analysis": {
     "drink_name": "Monster Energy",
-    "caffeine_content_mg": 160,
+    "caffeine_mg": 160,
     "sugar_content_g": 54,
     "calories_kcal": 230,
     "confidence_score": 0.92
@@ -258,7 +258,7 @@ Authorization: Token **your_auth_token_here**
 ```json  
 {
   "beverage_name": "Espresso",
-  "caffeine_amount_mg": 80.0,
+  "caffeine_mg": 80.0,
   "beverage_size_ml": 30,
   "sugar_content_g": 0,
   "calories_kcal": 5,
@@ -276,7 +276,7 @@ Authorization: Token **your_auth_token_here**
     "id": 42,
     "user": "your_user_id",
     "drink_name": "Latte",
-    "caffeine_content_mg": 120,
+    "caffeine_mg": 120,
     "sugar_content_g": 12,
     "calories_kcal": 180,
     "consumed_at": "2025-02-23T08:30:00Z"
@@ -312,7 +312,7 @@ Authorization: Token **your_auth_token_here**
     "id": 43,
     "user": "your_user_id",
     "drink_name": "Espresso",
-    "caffeine_content_mg": 80,
+    "caffeine_mg": 80,
     "sugar_content_g": 0,
     "calories_kcal": 5,
     "consumed_at": "2025-02-23T10:00:00Z"
@@ -341,7 +341,7 @@ GET `/api/caffeine/logs/42/`
   "id": 42,
   "user": "your_user_id",
   "drink_name": "Latte",
-  "caffeine_content_mg": 120,
+  "caffeine_mg": 120,
   "sugar_content_g": 12,
   "calories_kcal": 180,
   "consumed_at": "2025-02-23T08:30:00Z"
