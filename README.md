@@ -189,13 +189,10 @@ Submits an image of a drink for analysis.
 #### **Response (200 OK)**
 ```json
 {
-  "image_url": "https://cdn.example.com/uploads/drink.jpg",
-  "analysis": {
-    "beverage_name": "Monster Energy Zero Ultra",
-    "caffeine_mg": 140,
-    "sugars_g": 0,
-    "calories": 10
-  }
+    "image_url": "https://r2.lucasdoell.dev/uploads/caffeine_drinks/monster_energy.jpeg",
+    "analysis": {
+        "raw_response": "```json\n{\n  \"beverage_name\": \"Monster Energy\",\n  \"serving_size\": \"16 fl oz (473ml)\",\n  \"calories\": 200,\n  \"total_fat_g\": 0,\n  \"sodium_mg\": 200,\n  \"total_carbohydrates_g\": 55,\n  \"sugars_g\": 54,\n  \"added_sugars_g\": 54,\n  \"protein_g\": 0,\n  \"caffeine_mg\": 160,\n  \"taurine_mg\": 1000,\n  \"b_vitamins\": {\n    \"vitamin_b3_mg\": 20,\n    \"vitamin_b6_mg\": 2,\n    \"vitamin_b12_mcg\": 6\n  },\n  \"other_ingredients\": {\n    \"carbonated_water\": true,\n    \"natural_flavors\": true,\n    \"sucralose\": false\n  },\n  \"other_notes\": \"Carbonated\"\n}\n```"
+    }
 }
 ```
 #### **Possible Errors**
