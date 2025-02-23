@@ -10,50 +10,46 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const invoices = [
+const caffeineLogs = [
   {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
   {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
   {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
   {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
   {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
   {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
+    date: "2023-01-01",
+    time: "12:00 PM",
+    method: "Coffee",
+    amount: 10,
   },
 ];
+
+const totalAmount = caffeineLogs.reduce((acc, log) => acc + log.amount, 0);
 
 export function CaffeineLog() {
   return (
@@ -66,28 +62,26 @@ export function CaffeineLog() {
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="w-[100px]">Date</TableHead>
+              <TableHead>Time</TableHead>
               <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+              <TableHead className="text-right">Amount (g)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right">
-                  {invoice.totalAmount}
-                </TableCell>
+            {caffeineLogs.map((log) => (
+              <TableRow key={log.date}>
+                <TableCell className="font-medium">{log.date}</TableCell>
+                <TableCell>{log.time}</TableCell>
+                <TableCell>{log.method}</TableCell>
+                <TableCell className="text-right">{log.amount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
+              <TableCell className="text-right">{totalAmount} grams</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
