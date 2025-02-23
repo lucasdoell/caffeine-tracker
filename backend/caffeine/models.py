@@ -6,7 +6,7 @@ class CaffeineLog(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="caffeine_logs")
     beverage_name = models.CharField(max_length=100, blank=True, null=True)
-    caffeine = models.FloatField()
+    caffeine_mg = models.FloatField()
     beverage_size_ml = models.FloatField(blank=True, null=True)
     sugar_content_g = models.FloatField(blank=True, null=True)
     calories_kcal = models.FloatField(blank=True, null=True)

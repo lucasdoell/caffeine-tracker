@@ -8,7 +8,7 @@ class CaffeineLogSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "beverage_name",
-            "caffeine",
+            "caffeine_mg",
             "beverage_size_ml",
             "sugar_content_g",
             "calories_kcal",
