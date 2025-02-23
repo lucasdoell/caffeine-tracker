@@ -48,9 +48,9 @@ export function DashboardPage() {
             <h1 className="text-2xl">Dashboard</h1>
           </CardHeader>
           <section className="px-6">
-            <Card>
+            <Card className="bg-[#f7f1e9]">
               <CardHeader>
-                <h2 className="text-xl">Caffeine Makes It Possible 💪</h2>
+                <h2 className="text-2xl">Caffeine Makes It Possible 💪</h2>
               </CardHeader>
               <CardContent>
                 <p className="text-base">
