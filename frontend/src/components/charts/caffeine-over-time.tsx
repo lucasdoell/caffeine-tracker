@@ -6,10 +6,10 @@ import {
   AreaChart,
   CartesianGrid,
   ResponsiveContainer,
+  Scatter,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Scatter,
 } from "recharts";
 
 import {
@@ -34,12 +34,12 @@ import { useQuery } from "@tanstack/react-query";
 type TimeRange = "1d" | "7d" | "30d";
 
 interface CaffeineIntake {
-  date: string;      // Time of intake (ISO string)
+  date: string; // Time of intake (ISO string)
   caffeine_mg: number;
 }
 
 interface CaffeineDataPoint {
-  date: string;                 // ISO string
+  date: string; // ISO string
   caffeine_remaining_mg: number;
 }
 
@@ -63,12 +63,16 @@ async function getCaffeineIntake(): Promise<CaffeineIntake[]> {
 }
 
 // 2. Calculate caffeine decay at 5-min intervals
-function calculateCaffeineDecay(intakes: CaffeineIntake[], timeRange: TimeRange): CaffeineDataPoint[] {
+function calculateCaffeineDecay(
+  intakes: CaffeineIntake[],
+  timeRange: TimeRange
+): CaffeineDataPoint[] {
   const halfLifeHours = 5;
   const now = new Date();
 
   // Decide how many minutes to go backward & forward
-  const totalHours = timeRange === "1d" ? 24 : timeRange === "7d" ? 7 * 24 : 30 * 24;
+  const totalHours =
+    timeRange === "1d" ? 24 : timeRange === "7d" ? 7 * 24 : 30 * 24;
   const totalMinutes = totalHours * 60;
 
   const data: CaffeineDataPoint[] = [];
@@ -81,7 +85,8 @@ function calculateCaffeineDecay(intakes: CaffeineIntake[], timeRange: TimeRange)
     let sum = 0;
     // Sum all intakes (decayed) at this time
     for (const { date, caffeine_mg } of intakes) {
-      const elapsedHrs = (timestamp.getTime() - new Date(date).getTime()) / (1000 * 3600);
+      const elapsedHrs =
+        (timestamp.getTime() - new Date(date).getTime()) / (1000 * 3600);
       if (elapsedHrs >= 0) {
         sum += caffeine_mg * Math.pow(0.5, elapsedHrs / halfLifeHours);
       }
@@ -97,18 +102,25 @@ function calculateCaffeineDecay(intakes: CaffeineIntake[], timeRange: TimeRange)
 }
 
 // 3. For each intake event, find the data point in the decayed dataset
-function computeScatterPoints(intakes: CaffeineIntake[], decayData: CaffeineDataPoint[]): CaffeineDataPoint[] {
+function computeScatterPoints(
+  intakes: CaffeineIntake[],
+  decayData: CaffeineDataPoint[]
+): CaffeineDataPoint[] {
   return intakes.map((intake) => {
     const isoDate = new Date(intake.date).toISOString();
     // Attempt direct match first
-    let found = decayData.find((dp) => dp.date.slice(0,16) === isoDate.slice(0,16));
+    let found = decayData.find(
+      (dp) => dp.date.slice(0, 16) === isoDate.slice(0, 16)
+    );
 
     if (!found) {
       // fallback: pick the closest in time
       let minDiff = Infinity;
       let closest: CaffeineDataPoint | null = null;
       for (const dp of decayData) {
-        const diff = Math.abs(new Date(dp.date).getTime() - new Date(intake.date).getTime());
+        const diff = Math.abs(
+          new Date(dp.date).getTime() - new Date(intake.date).getTime()
+        );
         if (diff < minDiff) {
           minDiff = diff;
           closest = dp;
@@ -176,10 +188,18 @@ export function CaffeineOverTimeChart() {
       <CardHeader className="flex items-center gap-2 border-b py-5 sm:flex-row">
         <div className="flex-1 grid gap-1 text-center sm:text-left">
           <CardTitle>Caffeine Over Time</CardTitle>
-          <CardDescription>Track your remaining caffeine levels over time</CardDescription>
+          <CardDescription>
+            Track your remaining caffeine levels over time
+          </CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={(val: string) => setTimeRange(val as TimeRange)}>
-          <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a range">
+        <Select
+          value={timeRange}
+          onValueChange={(val: string) => setTimeRange(val as TimeRange)}
+        >
+          <SelectTrigger
+            className="w-[160px] rounded-lg sm:ml-auto"
+            aria-label="Select a range"
+          >
             <SelectValue placeholder="Today" />
           </SelectTrigger>
           <SelectContent>
@@ -191,13 +211,24 @@ export function CaffeineOverTimeChart() {
       </CardHeader>
 
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={decayData}>
               <defs>
                 <linearGradient id="fillCaffeine" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1} />
+                  <stop
+                    offset="5%"
+                    stopColor="var(--chart-1)"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--chart-1)"
+                    stopOpacity={0.1}
+                  />
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} />
