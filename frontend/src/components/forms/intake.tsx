@@ -127,6 +127,8 @@ export function CaffeineLogDialog() {
         throw new Error("Failed to confirm submission");
       }
 
+      toast.success("Successfully submitted caffeine intake");
+
       // Reset form and close dialog
       setStep(4);
     } catch (error) {
@@ -168,8 +170,6 @@ export function CaffeineLogDialog() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      toast.success("Successfully submitted caffeine intake");
 
       // Reset form and close dialog
       const data = (await response.json()) as {
