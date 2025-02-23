@@ -100,7 +100,7 @@ export function CaffeineLog() {
           Caffeine Log
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-h-[330px] overflow-y-auto">
         {error ? (
           <ErrorState error={error as Error} />
         ) : (
