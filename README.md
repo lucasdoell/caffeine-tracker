@@ -1,8 +1,86 @@
-# Cornell Big Red Makeathon Spring 2025
+# **CaffTrack: Personalized Caffeine Tracking and AI Assistant**
 
-Full-stack application with Vite frontend and Django backend.
+_Last Updated: February 23, 2025_
 
-## Setup
+## **Overview**
+CaffTrack is a web-based application designed to help users track their caffeine intake and gain insights into their consumption habits. The platform allows users to log their caffeine consumption, analyze intake trends, and interact with an AI-powered chatbot to receive personalized recommendations and insights. 
+
+The application integrates **AI-driven analysis**, **real-time caffeine tracking**, and **cloud-based storage** to provide a seamless and insightful user experience.
+
+---
+
+## **Tech Stack**
+CaffTrack is built with a modern **full-stack architecture**, leveraging **React**, **Django**, **Cloudflare R2**, and **AI-powered analysis** to deliver a robust and scalable platform.
+
+### **Frontend**
+- **Framework:** React with TypeScript
+- **State Management:** React hooks, Context API
+- **UI Library:** ShadCN/UI (based on Radix UI) for components
+- **Networking:** TanStack React Query for efficient data fetching and caching
+- **Markdown Rendering:** `react-markdown` with `remark-gfm` for AI responses
+- **Styling:** Tailwind CSS
+- **Routing:** React Router
+
+### **Backend**
+- **Framework:** Django with Django REST Framework (DRF)
+- **Authentication:** Token-based authentication using Django REST Framework's built-in token system
+- **Database:** PostgreSQL
+- **AI Integration:** Google Gemini AI API for intelligent chatbot responses and drink analysis
+- **Cloud Storage:** Cloudflare R2 (S3-compatible storage) for storing drink images
+- **Background Processing:** Asynchronous processing for AI analysis and image handling
+
+### **Deployment & Infrastructure**
+- **Frontend Hosting:** Vercel
+- **Backend Hosting:** Railway 
+- **Storage:** Cloudflare R2 for scalable and efficient media storage
+- **Security:** HTTPS, Token-based authentication, Secure file uploads
+
+---
+
+## **Core Features**
+### **1. Caffeine Tracking**
+Users can log their caffeine consumption, including beverage name, caffeine content, and sugar levels. The logs are stored securely in the database and can be retrieved for trend analysis.
+
+### **2. AI-Powered Chatbot**
+The chatbot, powered by Google Gemini AI, provides:
+- **Caffeine insights** based on user consumption logs.
+- **General health recommendations** related to caffeine intake.
+- **Personalized responses** considering user history.
+
+### **3. Image-Based Drink Analysis**
+Users can upload images of their drinks, and the system will:
+- **Identify the beverage** and estimate caffeine content.
+- **Analyze nutritional data** (calories, sugar, etc.).
+- **Provide AI-generated insights** on the beverage.
+
+### **4. Caffeine Metabolism Modeling**
+The platform simulates **caffeine metabolism over time**, estimating caffeine levels in the body based on recorded intake and known caffeine half-life.
+
+### **5. Data Visualization & Insights**
+Users can view:
+- **Caffeine trends over time** in graphical format.
+- **Daily and weekly intake summaries**.
+- **Estimated caffeine clearance curves**.
+
+---
+
+## **How It Works**
+1. **User Logs In:** Authentication via Django's token-based system.
+2. **Logs Caffeine Consumption:** Manually logs drinks with caffeine content.
+4. **Uploads Drink Images:** AI identifies the drink and provides data.
+5. **Interacts with AI:** Asks the chatbot for insights and recommendations.
+6. **Tracks Caffeine Levels:** Views caffeine metabolism over time.
+
+---
+
+## **Why CaffTrack?**
+- **AI-Powered Intelligence**: Uses Google Gemini AI to provide smart insights.
+- **Personalized Analysis**: Tracks individual consumption and metabolism.
+- **Cloud-Based Scalability**: Uses Cloudflare R2 for efficient media storage.
+- **Modern Tech Stack**: Built with TypeScript, Django, and REST APIs.
+- **Health & Wellness Focused**: Helps users optimize caffeine intake for better health.
+
+---
 
 ### Frontend
 
