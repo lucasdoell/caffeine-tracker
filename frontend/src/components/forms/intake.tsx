@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const formSchema = z.object({
@@ -69,7 +70,7 @@ interface OtherIngredients {
 }
 
 interface DrinkData {
-  drink_name: string;
+  beverage_name: string;
   serving_size: string;
   calories: number;
   total_fat_g: number;
@@ -92,6 +93,8 @@ export function CaffeineLogDialog() {
   const [drinkData, setDrinkData] = useState<DrinkData | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -126,6 +129,8 @@ export function CaffeineLogDialog() {
       if (!response.ok) {
         throw new Error("Failed to confirm submission");
       }
+
+      toast.success("Successfully submitted caffeine intake");
 
       // Reset form and close dialog
       setStep(4);
@@ -169,8 +174,6 @@ export function CaffeineLogDialog() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      toast.success("Successfully submitted caffeine intake");
-
       // Reset form and close dialog
       const data = (await response.json()) as {
         analysis: { raw_response: string };
@@ -194,10 +197,16 @@ export function CaffeineLogDialog() {
 
   function handleAddAnother() {
     resetForm();
+    queryClient.invalidateQueries({
+      queryKey: ["caffeineLogs"],
+    });
   }
 
   function handleClose() {
     resetForm();
+    queryClient.invalidateQueries({
+      queryKey: ["caffeineLogs"],
+    });
     setIsDialogOpen(false);
   }
 
@@ -365,7 +374,7 @@ export function CaffeineLogDialog() {
                 <h3 className="text-lg font-semibold">Confirm Drink Details</h3>
                 <div className="grid gap-2">
                   <p>
-                    <strong>Drink Name:</strong> {drinkData.drink_name}
+                    <strong>Drink Name:</strong> {drinkData.beverage_name}
                   </p>
                   <p>
                     <strong>Serving Size:</strong> {drinkData.serving_size}
