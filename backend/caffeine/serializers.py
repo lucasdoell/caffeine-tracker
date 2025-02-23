@@ -26,3 +26,8 @@ class CaffeineLogSerializer(serializers.ModelSerializer):
             "created_at"
         ]
         read_only_fields = ["user", "created_at", "confirmed"]
+
+
+class CaffeineOverTimeSerializer(serializers.Serializer):
+    date = serializers.DateTimeField()
+    caffeine_remaining_mg = serializers.FloatField()
