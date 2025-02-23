@@ -9,49 +9,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useQuery } from "@tanstack/react-query";
 
-const caffeineLogs = [
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-  {
-    date: "2023-01-01",
-    time: "12:00 PM",
-    method: "Coffee",
-    amount: 10,
-  },
-];
+type CaffeineLog = {
+  id: number;
+  user: string;
+  drink_name: string;
+  caffeine_content_mg: number;
+  sugar_content_g: number;
+  calories_kcal: number;
+  consumed_at: string;
+};
 
-const totalAmount = caffeineLogs.reduce((acc, log) => acc + log.amount, 0);
+async function getCaffeineLogs() {
+  const response = await fetch("/api/caffeine/logs/", {
+    method: "GET",
+    headers: {
+      Authorization: `Token ${localStorage.getItem("jwt_token")}`,
+    },
+  });
+  return response.json() as unknown as CaffeineLog[];
+}
 
 export function CaffeineLog() {
+  const { data: caffeineLogs, isLoading } = useQuery({
+    queryKey: ["caffeineLogs"],
+    queryFn: getCaffeineLogs,
+    staleTime: Infinity,
+  });
+
+  const totalAmount = caffeineLogs
+    ? caffeineLogs.reduce((acc, log) => acc + log.caffeine_content_mg, 0)
+    : 0;
+
   return (
     <Card>
       <CardHeader>
@@ -63,20 +53,30 @@ export function CaffeineLog() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Date</TableHead>
-              <TableHead>Time</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount (g)</TableHead>
+              <TableHead>Drink</TableHead>
+              <TableHead>Caffeine (mg)</TableHead>
+              <TableHead className="text-right">Sugar (g)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {caffeineLogs.map((log) => (
-              <TableRow key={log.date}>
-                <TableCell className="font-medium">{log.date}</TableCell>
-                <TableCell>{log.time}</TableCell>
-                <TableCell>{log.method}</TableCell>
-                <TableCell className="text-right">{log.amount}</TableCell>
-              </TableRow>
-            ))}
+            {isLoading ? (
+              <TableRow>Loading...</TableRow>
+            ) : caffeineLogs?.length ? (
+              caffeineLogs.map((log) => (
+                <TableRow key={log.id}>
+                  <TableCell className="font-medium">
+                    {log.consumed_at.split("T")[0]}
+                  </TableCell>
+                  <TableCell>{log.drink_name}</TableCell>
+                  <TableCell className="text-right">
+                    {log.caffeine_content_mg}
+                  </TableCell>
+                  <TableCell>{log.sugar_content_g}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>No data found</TableRow>
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>

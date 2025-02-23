@@ -56,17 +56,33 @@ function parseAIResponse(response: string): DrinkData | null {
   }
 }
 
+interface BVitamins {
+  vitamin_b3_mg: number;
+  vitamin_b6_mg: number;
+  vitamin_b12_mcg: number;
+}
+
+interface OtherIngredients {
+  carbonated_water: boolean;
+  natural_flavors: boolean;
+  sucralose: boolean;
+}
+
 interface DrinkData {
   drink_name: string;
-  calories: string;
-  total_fat: string;
-  sodium: string;
-  total_carbohydrate: string;
-  sugar: string;
-  added_sugar: string;
-  protein: string;
-  caffeine: string;
   serving_size: string;
+  calories: number;
+  total_fat_g: number;
+  sodium_mg: number;
+  total_carbohydrates_g: number;
+  sugars_g: number;
+  added_sugars_g: number;
+  protein_g: number;
+  caffeine_mg: number;
+  taurine_mg?: number;
+  b_vitamins?: BVitamins;
+  other_ingredients?: OtherIngredients;
+  other_notes?: string;
 }
 
 export function CaffeineLogDialog() {
@@ -104,10 +120,7 @@ export function CaffeineLogDialog() {
           "Content-Type": "application/json",
           Authorization: `Token ${localStorage.getItem("jwt_token")}`,
         },
-        body: JSON.stringify({
-          ...drinkData,
-          caffeine: drinkData?.caffeine.replace("mg", ""),
-        }),
+        body: JSON.stringify(drinkData),
       });
 
       if (!response.ok) {
@@ -355,33 +368,53 @@ export function CaffeineLogDialog() {
                     <strong>Drink Name:</strong> {drinkData.drink_name}
                   </p>
                   <p>
+                    <strong>Serving Size:</strong> {drinkData.serving_size}
+                  </p>
+                  <p>
                     <strong>Calories:</strong> {drinkData.calories}
                   </p>
                   <p>
-                    <strong>Total Fat:</strong> {drinkData.total_fat}
+                    <strong>Total Fat:</strong> {drinkData.total_fat_g}g
                   </p>
                   <p>
-                    <strong>Sodium:</strong> {drinkData.sodium}
+                    <strong>Sodium:</strong> {drinkData.sodium_mg}mg
                   </p>
                   <p>
-                    <strong>Total Carbohydrate:</strong>{" "}
-                    {drinkData.total_carbohydrate}
+                    <strong>Total Carbohydrates:</strong>{" "}
+                    {drinkData.total_carbohydrates_g}g
                   </p>
                   <p>
-                    <strong>Sugar:</strong> {drinkData.sugar}
+                    <strong>Sugars:</strong> {drinkData.sugars_g}g
                   </p>
                   <p>
-                    <strong>Added Sugar:</strong> {drinkData.added_sugar}
+                    <strong>Added Sugars:</strong> {drinkData.added_sugars_g}g
                   </p>
                   <p>
-                    <strong>Protein:</strong> {drinkData.protein}
+                    <strong>Protein:</strong> {drinkData.protein_g}g
                   </p>
                   <p>
-                    <strong>Caffeine:</strong> {drinkData.caffeine}
+                    <strong>Caffeine:</strong> {drinkData.caffeine_mg}mg
                   </p>
-                  <p>
-                    <strong>Serving Size:</strong> {drinkData.serving_size}
-                  </p>
+                  {drinkData.taurine_mg && (
+                    <p>
+                      <strong>Taurine:</strong> {drinkData.taurine_mg}mg
+                    </p>
+                  )}
+                  {drinkData.b_vitamins && (
+                    <div>
+                      <strong>B Vitamins:</strong>
+                      <ul className="list-disc pl-6 mt-1">
+                        <li>B3: {drinkData.b_vitamins.vitamin_b3_mg}mg</li>
+                        <li>B6: {drinkData.b_vitamins.vitamin_b6_mg}mg</li>
+                        <li>B12: {drinkData.b_vitamins.vitamin_b12_mcg}mcg</li>
+                      </ul>
+                    </div>
+                  )}
+                  {drinkData.other_notes && (
+                    <p>
+                      <strong>Other Notes:</strong> {drinkData.other_notes}
+                    </p>
+                  )}
                 </div>
                 <div className="flex justify-between">
                   <Button
