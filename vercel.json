@@ -3,6 +3,7 @@
     {
       "source": "/api/:path*",
       "destination": "https://backend.caffeine.lucasdoell.dev/api/:path*"
-    }
+    },
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
