@@ -49,7 +49,7 @@ export function LoginForm({
 
     console.log(values);
 
-    const res = await fetch(`http://localhost:8000/api/users/login/`, {
+    const res = await fetch("/api/users/login/", {
       method: "POST",
       body: JSON.stringify(values),
       headers: {
