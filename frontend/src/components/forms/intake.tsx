@@ -287,6 +287,7 @@ export function CaffeineLogDialog() {
                         <Input
                           type="number"
                           {...field}
+                          placeholder="Enter an amount in milliliters"
                           onChange={(e) =>
                             field.onChange(Number(e.target.value))
                           }
@@ -307,6 +308,7 @@ export function CaffeineLogDialog() {
                         <Input
                           type="number"
                           {...field}
+                          placeholder="Enter an amount in grams"
                           onChange={(e) =>
                             field.onChange(Number(e.target.value))
                           }
@@ -327,6 +329,7 @@ export function CaffeineLogDialog() {
                         <Input
                           type="number"
                           {...field}
+                          placeholder="Enter an amount in kilocalories"
                           onChange={(e) =>
                             field.onChange(Number(e.target.value))
                           }

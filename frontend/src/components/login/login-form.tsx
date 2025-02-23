@@ -121,6 +121,7 @@ export function LoginForm({
                             id="password"
                             type="password"
                             required
+                            placeholder="••••••••"
                             className="bg-background/98"
                           />
                         </FormControl>

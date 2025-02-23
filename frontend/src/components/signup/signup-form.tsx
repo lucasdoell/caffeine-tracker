@@ -156,6 +156,7 @@ export function SignupForm({
                             type="password"
                             autoComplete="new-password"
                             required
+                            placeholder="Enter a password"
                             className="bg-background/98"
                           />
                         </FormControl>
@@ -180,6 +181,7 @@ export function SignupForm({
                             type="password"
                             autoComplete="new-password"
                             required
+                            placeholder="Confirm your password"
                             className="bg-background/98"
                           />
                         </FormControl>
