@@ -2,66 +2,84 @@
 "use client";
 
 import React from "react";
+// UI imports
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { BotMessageSquare } from 'lucide-react';
+import { BotMessageSquare } from "lucide-react";
 import { Input } from "@/components/ui/input";
+// Markdown support
 import ReactMarkdown from "react-markdown";
-// If you want GFM features (tables, strikethrough, etc.):
 import remarkGfm from "remark-gfm";
 
 interface ChatMessage {
   role: "user" | "assistant";
-  content: string;  // AI might include markdown (headings, bold, lists, etc.)
+  content: string;
 }
 
 export function ChatBot() {
   const [open, setOpen] = React.useState(false);
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [userInput, setUserInput] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false); // Tracks API response status
 
   async function handleSend() {
-    if (!userInput.trim()) return;
+    if (!userInput.trim() || isLoading) return; // Prevent multiple requests
 
     // Add user message
     setMessages((prev) => [...prev, { role: "user", content: userInput }]);
+    setIsLoading(true); // Set loading state
 
-    // Send request
-    const response = await fetch("/api/ai/chat/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("jwt_token")}`,
-      },
-      body: JSON.stringify({ message: userInput }),
-    });
-    const data = await response.json();
-
-    // Add assistant message (assuming `data.response` is the AI markdown)
+    // Add temporary "Tracking..." AI message
     setMessages((prev) => [
       ...prev,
-      { role: "assistant", content: data.response ?? "*[No response]*" },
+      { role: "assistant", content: "*Tracking...*" },
     ]);
 
-    // Clear input
-    setUserInput("");
+    try {
+      // Send request to AI endpoint
+      const response = await fetch("/api/ai/chat/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("jwt_token")}`,
+        },
+        body: JSON.stringify({ message: userInput }),
+      });
+      const data = await response.json();
+
+      // Remove "Tracking..." and replace with real response
+      setMessages((prev) => [
+        ...prev.slice(0, -1), // Remove last "Tracking..." entry
+        { role: "assistant", content: data.response ?? "*[No response]*" },
+      ]);
+    } catch (error) {
+      // Handle error gracefully
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        { role: "assistant", content: "*[Error fetching response]*" },
+      ]);
+    } finally {
+      setIsLoading(false);
+      setUserInput(""); // Clear input field
+    }
   }
 
   return (
     <>
-    {/* Floating bubble (bottom-right) */}
-    <div
-    className="fixed bottom-8 right-8 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer"
-    style={{ backgroundColor: "oklch(29.42% 0.039 76.43)" }}
-    onClick={() => setOpen(true)}
-    >
-    <span className="text-white font-bold text-xl"><BotMessageSquare /></span>
-    </div>
+      {/* Floating bubble (bottom-right) */}
+      <div
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer"
+        style={{ backgroundColor: "oklch(29.42% 0.039 76.43)" }}
+        onClick={() => setOpen(true)}
+      >
+        <span className="text-white font-bold text-xl">
+          <BotMessageSquare />
+        </span>
+      </div>
 
       {/* Chat Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-        </DialogTrigger>
+        <DialogTrigger asChild></DialogTrigger>
         <DialogContent className="flex flex-col h-[70vh]">
           <DialogHeader>
             <h2 className="text-lg font-bold">Caff Track Chat</h2>
@@ -80,12 +98,8 @@ export function ChatBot() {
                 >
                   <strong>{isAssistant ? "CaffTrack" : "You"}:</strong>{" "}
                   {isAssistant ? (
-                    // Use ReactMarkdown with .prose to style headings, bold, etc.
                     <div className="prose prose-sm max-w-none mt-1">
-                      <ReactMarkdown
-                        // add GFM plugin if you want tables, strikethrough, etc.
-                        remarkPlugins={[remarkGfm]}
-                      >
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {msg.content}
                       </ReactMarkdown>
                     </div>
@@ -106,8 +120,11 @@ export function ChatBot() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSend();
               }}
+              disabled={isLoading} // Disable input while loading
             />
-            <Button onClick={handleSend}>Send</Button>
+            <Button onClick={handleSend} disabled={isLoading}>
+              {isLoading ? "Tracking..." : "Send"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
