@@ -16,22 +16,52 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { CaffeineLog } from "@/types/data-fetching";
+import { useQuery } from "@tanstack/react-query";
 import { TrendingUp } from "lucide-react";
-const chartData = [{ month: "january", desktop: 1260, mobile: 570 }];
 
 const chartConfig = {
-  desktop: {
+  intake: {
     label: "Intake",
     color: "var(--chart-1)",
   },
-  mobile: {
+  allowance: {
     label: "Total Allowance",
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
+async function getCaffeineLogs() {
+  const response = await fetch("/api/caffeine/logs/", {
+    method: "GET",
+    headers: {
+      Authorization: `Token ${localStorage.getItem("jwt_token")}`,
+    },
+  });
+  return response.json() as unknown as CaffeineLog[];
+}
+
 export function CaffeineChart() {
-  const totalVisitors = chartData[0].desktop + chartData[0].mobile;
+  const { data: caffeineLogs, isLoading } = useQuery({
+    queryKey: ["caffeineLogs"],
+    queryFn: getCaffeineLogs,
+    staleTime: Infinity,
+  });
+
+  const todaysCaffeineLogs = caffeineLogs?.filter((log) =>
+    log.created_at.includes(new Date().toISOString().split("T")[0])
+  );
+  const totalAmount = todaysCaffeineLogs?.reduce(
+    (acc, log) => acc + log.caffeine_mg!,
+    0
+  );
+
+  const chartData = [
+    {
+      intake: totalAmount,
+      allowance: 400 - (totalAmount || 0),
+    },
+  ];
 
   return (
     <Card className="flex flex-col">
@@ -67,14 +97,18 @@ export function CaffeineChart() {
                           y={(viewBox.cy || 0) - 16}
                           className="fill-foreground text-2xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalAmount
+                            ? totalAmount.toLocaleString()
+                            : isLoading
+                            ? "Loading..."
+                            : "No data"}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 4}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          mg of caffeine
                         </tspan>
                       </text>
                     );
@@ -83,17 +117,17 @@ export function CaffeineChart() {
               />
             </PolarRadiusAxis>
             <RadialBar
-              dataKey="mobile"
-              fill="var(--color-mobile)"
+              dataKey="allowance"
               stackId="a"
               cornerRadius={5}
+              fill="var(--color-allowance)"
               className="stroke-transparent stroke-2"
             />
             <RadialBar
-              dataKey="desktop"
+              dataKey="intake"
+              fill="var(--color-intake)"
               stackId="a"
               cornerRadius={5}
-              fill="var(--color-desktop)"
               className="stroke-transparent stroke-2"
             />
           </RadialBarChart>
@@ -104,7 +138,7 @@ export function CaffeineChart() {
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing total caffeine intake for today
         </div>
       </CardFooter>
     </Card>
