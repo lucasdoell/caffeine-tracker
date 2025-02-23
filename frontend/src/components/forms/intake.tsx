@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Camera, Loader2, PlusIcon } from "lucide-react";
+import { Camera, CheckCircle, Loader2, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -75,6 +75,7 @@ export function CaffeineLogDialog() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [drinkData, setDrinkData] = useState<DrinkData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -97,12 +98,16 @@ export function CaffeineLogDialog() {
 
   async function handleConfirmation() {
     try {
-      const response = await fetch("/api/confirm-caffeine-log", {
+      const response = await fetch("/api/caffeine/logs/create/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("jwt_token")}`,
         },
-        body: JSON.stringify({ ...form.getValues(), ...drinkData }),
+        body: JSON.stringify({
+          ...drinkData,
+          caffeine: drinkData?.caffeine.replace("mg", ""),
+        }),
       });
 
       if (!response.ok) {
@@ -110,10 +115,7 @@ export function CaffeineLogDialog() {
       }
 
       // Reset form and close dialog
-      form.reset();
-      setImagePreview(null);
-      setStep(1);
-      setDrinkData(null);
+      setStep(4);
     } catch (error) {
       console.error("Error confirming submission:", error);
     }
@@ -170,8 +172,24 @@ export function CaffeineLogDialog() {
     setLoading(false);
   }
 
+  function resetForm() {
+    form.reset();
+    setImagePreview(null);
+    setStep(1);
+    setDrinkData(null);
+  }
+
+  function handleAddAnother() {
+    resetForm();
+  }
+
+  function handleClose() {
+    resetForm();
+    setIsDialogOpen(false);
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="h-4 w-4 mr-2" aria-hidden="true" /> Add Caffeine
@@ -375,6 +393,22 @@ export function CaffeineLogDialog() {
                   </Button>
                   <Button type="button" onClick={handleConfirmation}>
                     Confirm
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="grid gap-4 py-4 text-center">
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+                <h3 className="text-lg font-semibold">
+                  Data Successfully Uploaded
+                </h3>
+                <p>Your caffeine intake has been logged.</p>
+                <div className="flex justify-center gap-4 mt-4">
+                  <Button onClick={handleAddAnother}>Add Another</Button>
+                  <Button variant="outline" onClick={handleClose}>
+                    Close
                   </Button>
                 </div>
               </div>
