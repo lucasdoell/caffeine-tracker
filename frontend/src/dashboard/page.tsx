@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { CaffeineChart } from "@/components/charts/caffeine-chart";
 import { CaffeineOverTimeChart } from "@/components/charts/caffeine-over-time";
+import { CaffeineLog } from "@/components/log/caffeine-log";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QuickSelectorCard } from "@/dashboard/quick-selector-card";
 import { User } from "@/types/auth";
@@ -41,15 +42,15 @@ export function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <main className="flex flex-col gap-6 p-6">
+      <main className="flex flex-col gap-6 p-6 w-full">
         <Card>
           <CardHeader>
             <h1 className="text-2xl">Dashboard</h1>
           </CardHeader>
           <section className="px-6">
-            <Card>
+            <Card className="bg-[#f7f1e9]">
               <CardHeader>
-                <h2 className="text-xl">Caffeine Makes It Possible 💪</h2>
+                <h2 className="text-2xl">Caffeine Makes It Possible 💪</h2>
               </CardHeader>
               <CardContent>
                 <p className="text-base">
@@ -62,11 +63,14 @@ export function DashboardPage() {
               </CardContent>
             </Card>
           </section>
-          <section className="grid gap-6 p-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <section className="grid gap-6 p-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
             <div className="gap-6">
               <CaffeineChart />
             </div>
-            <div className="gap-6 col-span-full xl:col-span-3">
+            <div className="gap-6">
+              <CaffeineLog />
+            </div>
+            <div className="gap-6 col-span-full xl:col-span-2">
               <CaffeineOverTimeChart />
             </div>
             <div className="gap-6 col-span-2">

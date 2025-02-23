@@ -53,10 +53,11 @@ export function SignupForm({
 
     if (values.password !== values.confirmPassword) {
       toast.error("Passwords do not match. Please try again.");
+      setLoading(false);
       return;
     }
 
-    const res = await fetch(`http://localhost:8000/api/users/register/`, {
+    const res = await fetch("/api/users/register/", {
       method: "POST",
       body: JSON.stringify({
         email: values.email,

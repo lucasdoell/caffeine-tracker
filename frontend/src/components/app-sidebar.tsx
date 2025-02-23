@@ -25,19 +25,19 @@ const menuItems = [
 export function AppSidebar() {
   return (
     <Sidebar variant="floating" collapsible="icon" className="pt-6">
-      <SidebarContent className="flex flex-col justify-center h-full py-4">
+      <SidebarContent className="flex flex-col justify-center h-full py-4 bg-chart-1 rounded-lg">
         <SidebarMenu>
           <TooltipProvider delayDuration={0}>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.label}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton asChild className="h-12 w-12 p-0">
+                    <SidebarMenuButton asChild className="h-11 w-11 p-0">
                       <a
                         href={item.href}
                         className="flex items-center justify-center"
                       >
-                        <item.icon className="h-6 w-6" />
+                        <item.icon className="h-6 w-6 text-white" />
                         <span className="sr-only">{item.label}</span>
                       </a>
                     </SidebarMenuButton>
