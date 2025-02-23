@@ -2,7 +2,7 @@ from rest_framework import generics, permissions
 from .models import CaffeineLog
 from .serializers import CaffeineLogSerializer
 
-# Create Caffeine Log (already exists)
+# Create Caffeine Log
 class CaffeineLogCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CaffeineLogSerializer
@@ -16,13 +16,15 @@ class CaffeineLogListAPIView(generics.ListAPIView):
     serializer_class = CaffeineLogSerializer
 
     def get_queryset(self):
-        return CaffeineLog.objects.filter(user=self.request.user).order_by('-timestamp')
+        queryset = CaffeineLog.objects.filter(user=self.request.user).order_by('-created_at')
+        if not queryset.exists():
+            print(f"=== [DEBUG] No caffeine logs found for user {self.request.user} ===")
+        return queryset
 
 # Retrieve a Single Caffeine Log by ID
 class CaffeineLogDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CaffeineLogSerializer
-    queryset = CaffeineLog.objects.all()
 
     def get_queryset(self):
         return CaffeineLog.objects.filter(user=self.request.user)
