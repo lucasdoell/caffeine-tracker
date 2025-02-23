@@ -112,7 +112,7 @@ class SubmitDrinkAPIView(APIView):
             "Use **exact numerical values** (avoid ranges like '140-160mg'; always provide a single number). "
             "Units should be included where applicable (e.g., mg, g, fl oz). **Follow this format strictly:**\n\n"
             "{\n"
-            "  \"drink_name\": \"Monster Energy Zero Ultra\",\n"
+            "  \"beverage_name\": \"Monster Energy Zero Ultra\",\n"
             "  \"serving_size\": \"16 fl oz (473ml)\",\n"
             "  \"calories\": 10,\n"
             "  \"total_fat_g\": 0,\n"
