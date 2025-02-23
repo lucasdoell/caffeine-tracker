@@ -105,14 +105,42 @@ class SubmitDrinkAPIView(APIView):
         print(f"=== [DEBUG] Additional notes: {additional_notes} ===")
 
         # 9. Construct a prompt for Gemini that references the image_url
+        # Constructing a strict JSON-enforced prompt for Gemini
         prompt = (
-            "I will send you an image of a drink. Return a JSON object with the drink's nutritional details, "
-            "including the estimated caffeine and sugar content. If some details are missing in the image, "
-            "estimate them based on known data. "
+            "You will analyze an image of a drink and return a **strictly formatted JSON object** with its nutritional details. "
+            "Ensure that the response is **always** in **valid JSON** format, without any additional text, comments, or explanations. "
+            "Use **exact numerical values** (avoid ranges like '140-160mg'; always provide a single number). "
+            "Units should be included where applicable (e.g., mg, g, fl oz). **Follow this format strictly:**\n\n"
+            "{\n"
+            "  \"drink_name\": \"Monster Energy Zero Ultra\",\n"
+            "  \"serving_size\": \"16 fl oz (473ml)\",\n"
+            "  \"calories\": 10,\n"
+            "  \"total_fat_g\": 0,\n"
+            "  \"sodium_mg\": 200,\n"
+            "  \"total_carbohydrates_g\": 3,\n"
+            "  \"sugars_g\": 0,\n"
+            "  \"added_sugars_g\": 0,\n"
+            "  \"protein_g\": 0,\n"
+            "  \"caffeine_mg\": 140,\n"
+            "  \"taurine_mg\": 1000,\n"
+            "  \"b_vitamins\": {\n"
+            "    \"vitamin_b3_mg\": 20,\n"
+            "    \"vitamin_b6_mg\": 5,\n"
+            "    \"vitamin_b12_mcg\": 3\n"
+            "  },\n"
+            "  \"other_ingredients\": {\n"
+            "    \"carbonated_water\": true,\n"
+            "    \"natural_flavors\": true,\n"
+            "    \"sucralose\": true\n"
+            "  },\n"
+            "  \"other_notes\": \"Zero Sugar, Carbonated\"\n"
+            "}\n\n"
+            "If any value is missing, estimate it based on similar drinks. Ensure **all keys are present**."
             f"Additional inputs: {json.dumps(additional_inputs)}. "
             f"Additional notes: {additional_notes}. "
             f"Image URL: {image_url}."
         )
+
         print(f"=== [DEBUG] Constructed prompt for Gemini:\n{prompt} ===")
 
         # 10. Download the image from the constructed URL (only if needed by Gemini)
