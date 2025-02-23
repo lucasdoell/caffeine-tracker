@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     # 'django.contrib.admin',
 ]
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
