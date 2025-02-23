@@ -248,7 +248,7 @@ Authorization: Token **your_auth_token_here**
 
 ## Caffeine Tracking Endpoints
 
-### POST /api/caffeine/logs/  
+### POST /api/caffeine/logs/create/  
 Logs a caffeine entry into the user's tracking history.
 
 **Headers:**  
