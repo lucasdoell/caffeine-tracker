@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { CaffeineLogDialog } from "@/components/forms/intake";
 import {
   Card,
   CardContent,
@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PlusIcon } from "lucide-react";
 
 export function QuickSelectorCard() {
   return (
@@ -23,9 +22,7 @@ export function QuickSelectorCard() {
                   <li>Water</li>
                   <li>Energy</li>
                 </ul>
-                <Button variant="outline">
-                  <PlusIcon className="h-4 w-4" /> Add new
-                </Button>
+                <CaffeineLogDialog />
               </div>
             </div>
 
