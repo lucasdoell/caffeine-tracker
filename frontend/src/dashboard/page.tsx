@@ -4,6 +4,7 @@ import { CaffeineOverTimeChart } from "@/components/charts/caffeine-over-time";
 import { CaffeineLog } from "@/components/log/caffeine-log";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QuickSelectorCard } from "@/dashboard/quick-selector-card";
+import { ChatBot } from "@/components/chatbot/chat-bot";
 import { User } from "@/types/auth";
 import { useQuery } from "@tanstack/react-query";
 
@@ -78,6 +79,7 @@ export function DashboardPage() {
             </div>
           </section>
         </Card>
+        <ChatBot /> 
       </main>
     </DashboardLayout>
   );

@@ -2,7 +2,7 @@ import json
 import requests
 from io import BytesIO
 import PIL.Image
-
+from caffeine.models import CaffeineLog
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status, parsers
@@ -189,7 +189,7 @@ class SubmitDrinkAPIView(APIView):
 
 class GeminiChatView(APIView):
     """
-    Endpoint for text-based chat responses from Gemini.
+    Endpoint for text-based chat responses from Gemini, with user data context.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -197,9 +197,32 @@ class GeminiChatView(APIView):
         user_input = request.data.get("message", "")
         if not user_input:
             return Response({"error": "Message field is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        prompt = f"User says: {user_input}\nProvide a helpful and personalized response regarding caffeine intake and wellness."
-        
+
+        # 1. Fetch user logs
+        logs = CaffeineLog.objects.filter(user=request.user).order_by("-created_at")
+
+        # 2. Format logs as a string
+        if logs.exists():
+            formatted_logs = []
+            for log in logs:
+                date_str = log.created_at.strftime("%b %d %Y, %I:%M %p")
+                beverage = log.beverage_name or "Unknown drink"
+                mg = f"{int(log.caffeine_mg)} mg"
+                formatted_logs.append(f"{date_str} | {mg} from '{beverage}'")
+            logs_text = "\n".join(formatted_logs)
+        else:
+            logs_text = "No caffeine logs recorded."
+
+        # 3. Build prompt
+        prompt = (
+            "You have the following caffeine logs for the user:\n\n"
+            f"{logs_text}\n\n"
+            "Now, the user says:\n"
+            f"{user_input}\n\n"
+            "Provide a helpful, personalized response about caffeine intake and wellness."
+        )
+
+        # 4. Call Gemini
         try:
             gemini_response = generate_content_with_gemini(
                 api_key=settings.GEMINI_API_KEY,

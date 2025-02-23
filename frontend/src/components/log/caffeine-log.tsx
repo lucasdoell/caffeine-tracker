@@ -1,3 +1,5 @@
+"use client";
+
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -86,10 +88,8 @@ export function CaffeineLog() {
     staleTime: Infinity,
   });
 
-  console.log(caffeineLogs);
-
   const totalAmount = caffeineLogs
-    ? caffeineLogs.reduce((acc, log) => acc + log.caffeine_mg!, 0)
+    ? caffeineLogs.reduce((acc, log) => acc + (log.caffeine_mg ?? 0), 0)
     : 0;
 
   return (
@@ -121,18 +121,25 @@ export function CaffeineLog() {
             ) : caffeineLogs?.length ? (
               <>
                 <TableBody>
-                  {caffeineLogs.map((log) => (
-                    <TableRow key={log.id}>
-                      <TableCell className="font-medium">
-                        {new Date(log.created_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>{log.beverage_name}</TableCell>
-                      <TableCell>{log.caffeine_mg}</TableCell>
-                      <TableCell className="text-right">
-                        {log.sugars_g}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {caffeineLogs.map((log) => {
+                    // Format date as "Feb 23 10:30 AM"
+                    const formattedDate = new Date(log.created_at).toLocaleString("en-US", {
+                      month: "short",    // e.g. "Feb"
+                      day: "2-digit",    // e.g. "23"
+                      hour: "2-digit",   // e.g. "10"
+                      minute: "2-digit", // e.g. "30"
+                      hour12: true,      // AM/PM
+                    });
+
+                    return (
+                      <TableRow key={log.id}>
+                        <TableCell className="font-medium">{formattedDate}</TableCell>
+                        <TableCell>{log.beverage_name}</TableCell>
+                        <TableCell>{log.caffeine_mg ?? 0}</TableCell>
+                        <TableCell className="text-right">{log.sugars_g ?? 0}</TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
                 <TableFooter>
                   <TableRow>
