@@ -4,9 +4,6 @@
       "source": "/api/:path*/",
       "destination": "https://backend.caffeine.lucasdoell.dev/api/:path*/"
     },
-    {
-      "source": "/test-redirect",
-      "destination": "https://lucasdoell.dev"
-    }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
