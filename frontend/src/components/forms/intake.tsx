@@ -125,20 +125,24 @@ export function CaffeineLogDialog() {
         },
         body: JSON.stringify(drinkData),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to confirm submission");
       }
-
+  
       toast.success("Successfully submitted caffeine intake");
-
+  
+      // Invalidate all caffeine-related queries to refresh data in charts
       queryClient.invalidateQueries({
-        queryKey: ["caffeineLogs"],
+        queryKey: ["caffeineLogs"], // Logs update ✅
       });
       queryClient.invalidateQueries({
-        queryKey: ["caffeineOverTime"],
+        queryKey: ["caffeineOverTime"], // Might not match, see below ❌
       });
-
+      queryClient.invalidateQueries({
+        queryKey: ["caffeineIntakes"], // ✅ This is what CaffeineOverTimeChart uses
+      });
+  
       // Reset form and close dialog
       setStep(4);
     } catch (error) {
