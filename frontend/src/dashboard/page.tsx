@@ -64,21 +64,31 @@ export function DashboardPage() {
               </CardContent>
             </Card>
           </section>
-          <section className="grid gap-6 p-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
-            <div className="gap-6">
+          
+          {/* Responsive Grid */}
+          <section className="grid gap-6 p-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
+            {/* Caffeine Chart */}
+            <div className="w-full p-4 sm:p-6">
               <CaffeineChart />
             </div>
-            <div className="gap-6">
+
+            {/* Caffeine Log */}
+            <div className="w-full p-4 sm:p-6">
               <CaffeineLog />
             </div>
-            <div className="gap-6 col-span-full xl:col-span-2">
+
+            {/* Caffeine Over Time - Takes full width on small screens */}
+            <div className="w-full p-4 sm:p-6 col-span-full">
               <CaffeineOverTimeChart />
             </div>
-            <div className="gap-6 col-span-2">
+
+            {/* Quick Selector Card - Stays full width on mobile */}
+            <div className="w-full p-4 sm:p-6 col-span-full md:col-span-2">
               <QuickSelectorCard />
             </div>
           </section>
         </Card>
+        
         <ChatBot /> 
       </main>
     </DashboardLayout>
