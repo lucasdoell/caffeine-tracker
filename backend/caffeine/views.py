@@ -54,3 +54,4 @@ class CaffeineOverTimeAPIView(APIView):
         ]
 
         return Response(consumption_events, status=200)
+        
