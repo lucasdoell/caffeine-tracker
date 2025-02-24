@@ -53,13 +53,27 @@ const chartConfig = {
 
 // 1. Fetch caffeine intake events
 async function getCaffeineIntake(): Promise<CaffeineIntake[]> {
-  const response = await fetch("/api/caffeine/caffeine-over-time/", {
-    method: "GET",
-    headers: {
-      Authorization: `Token ${localStorage.getItem("jwt_token")}`,
-    },
-  });
-  return response.json();
+  try {
+    const response = await fetch("/api/caffeine/caffeine-over-time/", {
+      method: "GET",
+      headers: {
+        Authorization: `Token ${localStorage.getItem("jwt_token")}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error("Failed to fetch caffeine intake data:", response.status);
+      return []; // Return an empty array instead of null or undefined
+    }
+
+    const data = await response.json();
+
+    // Ensure we return an array
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Error fetching caffeine intake:", error);
+    return []; // Fail gracefully by returning an empty array
+  }
 }
 
 // 2. Calculate caffeine decay at 5-min intervals
