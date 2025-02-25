@@ -57,29 +57,54 @@ export function SignupForm({
       return;
     }
 
-    const res = await fetch("/api/users/register/", {
-      method: "POST",
-      body: JSON.stringify({
-        email: values.email,
-        username: values.username,
-        password: values.password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const res = await fetch("/api/users/register/", {
+        method: "POST",
+        body: JSON.stringify({
+          email: values.email,
+          username: values.username,
+          password: values.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const data = (await res.json()) as SignUpResponse;
+      const data = await res.json();
 
-    if (!res.ok) {
-      toast.error("Sign up failed. Please try again.");
-    } else {
-      localStorage.setItem("jwt_token", data.token);
-      navigate("/dashboard");
+      if (!res.ok) {
+        // Check if the response contains a structured error
+        if (data && typeof data === "object") {
+          const errorMessages: string[] = [];
+
+          Object.entries(data).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              // Django Rest Framework usually sends errors as an array
+              value.forEach((msg) => errorMessages.push(`${key}: ${msg}`));
+            } else {
+              errorMessages.push(`${key}: ${value}`);
+            }
+          });
+
+          if (errorMessages.length > 0) {
+            toast.error(errorMessages.join("\n"));
+          } else {
+            toast.error("Sign up failed. Please check your inputs.");
+          }
+        } else {
+          // Fallback for unknown error structure
+          toast.error(data?.message || "An unknown error occurred.");
+        }
+      } else {
+        localStorage.setItem("jwt_token", data.token);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Signup request failed:", error);
+      toast.error("Network error. Please try again later.");
     }
 
     setLoading(false);
-    return;
   }
 
   return (
@@ -97,7 +122,7 @@ export function SignupForm({
                   <FormField
                     control={form.control}
                     name="email"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
                           Email
@@ -108,19 +133,27 @@ export function SignupForm({
                             type="email"
                             placeholder="m@example.com"
                             required
-                            className="bg-background/98"
+                            className={cn(
+                              "bg-background/98",
+                              fieldState.invalid && "border-red-500"
+                            )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error && (
+                          <FormMessage className="text-red-500 text-sm">
+                            {fieldState.error.message}
+                          </FormMessage>
+                        )}
                       </FormItem>
                     )}
                   />
                 </div>
+
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
                     name="username"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
                           Username
@@ -132,19 +165,27 @@ export function SignupForm({
                             placeholder="Username"
                             autoComplete="username"
                             required
-                            className="bg-background/98"
+                            className={cn(
+                              "bg-background/98",
+                              fieldState.invalid && "border-red-500"
+                            )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error && (
+                          <FormMessage className="text-red-500 text-sm">
+                            {fieldState.error.message}
+                          </FormMessage>
+                        )}
                       </FormItem>
                     )}
                   />
                 </div>
+
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
                     name="password"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
                           Password
@@ -157,19 +198,27 @@ export function SignupForm({
                             autoComplete="new-password"
                             required
                             placeholder="Enter a password"
-                            className="bg-background/98"
+                            className={cn(
+                              "bg-background/98",
+                              fieldState.invalid && "border-red-500"
+                            )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error && (
+                          <FormMessage className="text-red-500 text-sm">
+                            {fieldState.error.message}
+                          </FormMessage>
+                        )}
                       </FormItem>
                     )}
                   />
                 </div>
+
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
                     name="confirmPassword"
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                       <FormItem>
                         <FormLabel className="flex items-center">
                           Confirm Password
@@ -182,14 +231,22 @@ export function SignupForm({
                             autoComplete="new-password"
                             required
                             placeholder="Confirm your password"
-                            className="bg-background/98"
+                            className={cn(
+                              "bg-background/98",
+                              fieldState.invalid && "border-red-500"
+                            )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        {fieldState.error && (
+                          <FormMessage className="text-red-500 text-sm">
+                            {fieldState.error.message}
+                          </FormMessage>
+                        )}
                       </FormItem>
                     )}
                   />
                 </div>
+
                 <div className="grid gap-4 pt-2">
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Loading..." : "Sign Up"}
