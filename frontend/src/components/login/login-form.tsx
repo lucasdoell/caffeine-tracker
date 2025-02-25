@@ -47,8 +47,6 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    console.log(values);
-
     const res = await fetch("/api/users/login/", {
       method: "POST",
       body: JSON.stringify(values),

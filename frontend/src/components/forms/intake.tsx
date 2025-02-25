@@ -151,7 +151,6 @@ export function CaffeineLogDialog() {
   }
 
   async function onSubmit(values: FormValues) {
-    console.log("Submitting form:", values);
     setLoading(true);
 
     try {
